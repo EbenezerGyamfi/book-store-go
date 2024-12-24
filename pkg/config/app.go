@@ -23,7 +23,8 @@ func Connect() {
             break
         }
         log.Printf("Database connection failed: %v. Retrying in 5 seconds...", err)
-        time.Sleep(5 * time.Second)
+        time.Sleep(10 * time.Second) // Initial delay before first connection attempt
+
     }
 
     if err != nil {
