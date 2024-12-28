@@ -18,11 +18,11 @@ services:
     build: .
     container_name: go-app
     environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-      MYSQL_DB: books
-      MYSQL_PORT: 3306
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: books
+      DB_PORT: 3306
     ports:
       - "8081:8081"
     depends_on:

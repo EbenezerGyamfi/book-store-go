@@ -1,10 +1,38 @@
 name: test-workflow
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
 jobs:
-  first-job:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: echo something
-        run: |
-          echo "hello world"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '^1.13.1' # The Go version to download (if necessary) and use.
       
+      - name: Run Mod 
+        run: go mod tidy
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '^1.13.1' # The Go version to download (if necessary) and use.
+      
+      - name: Run Mod 
+        run: go mod tidy
+
+      - name: Build and deploy
+        run: |
+          go build -o /cmd/main/main.go
+
+      -  run: ./main
