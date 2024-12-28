@@ -33,6 +33,6 @@ jobs:
 
       - name: Build and deploy
         run: |
-          go build -o ./cmd/main/main.go
+          go build -o ./cmd/main
 
       -  run: ./main
