@@ -57,7 +57,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: books
         options: >-
-          --health-cmd="mysqladmin ping -h mysql --silent"
+          --health-cmd="mysqladmin ping -h localhost --silent"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
@@ -70,6 +70,8 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '^1.13.1'
+
+      
 
       - name: Run Mod
         run: go mod tidy
@@ -85,6 +87,9 @@ jobs:
             sleep 2
           done
           echo "MySQL did not become available in time" && exit 1
+
+      - name: Check MySQL logs
+        run: docker logs mysql
 
       - name: Build and deploy
         run: |
