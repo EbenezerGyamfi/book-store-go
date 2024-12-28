@@ -57,7 +57,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: books
         options: >-
-          --health-cmd="mysqladmin ping -h localhost --silent"
+          --health-cmd="mysqladmin ping -h mysql --silent"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
