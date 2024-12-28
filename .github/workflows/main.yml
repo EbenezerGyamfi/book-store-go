@@ -15,7 +15,9 @@ jobs:
           - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: books
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpassword
         options: >-
           --health-cmd="mysqladmin ping -h localhost --silent"
           --health-interval=10s
@@ -69,7 +71,7 @@ jobs:
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
-          DB_USER: root
-          DB_PASSWORD: password
-          DB_NAME: books
+          DB_USER: testuser
+          DB_PASSWORD: testpassword
+          DB_NAME: testdb
         run: ./main
