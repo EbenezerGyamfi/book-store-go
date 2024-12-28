@@ -92,9 +92,6 @@ jobs:
 
       - name: Run Application
         env:
-          DB_HOST: mysql
-          DB_PORT: 3306
-          DB_NAME: books
-          DB_USER: root
-          DB_PASSWORD: root
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: books
         run: ./main
