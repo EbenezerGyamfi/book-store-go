@@ -10,6 +10,7 @@ env:
 
 jobs:
   test:
+    environment: testing
     runs-on: ubuntu-latest
     services:
       mysql:
