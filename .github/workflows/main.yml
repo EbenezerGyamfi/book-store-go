@@ -100,7 +100,7 @@ jobs:
 
 
       - name: Build
-        run: go build -o book-service
+        run: go build -o ./cmd/main
 
       - name: Run
         env:
@@ -109,4 +109,4 @@ jobs:
           DB_USER: root
           DB_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           DB_NAME: books
-        run: ./book-service
+        run: ./main
