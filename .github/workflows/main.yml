@@ -18,7 +18,7 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
         options: >-
           --health-cmd="mysqladmin ping -h localhost --silent"
           --health-interval=10s
@@ -49,9 +49,9 @@ jobs:
           done
           echo "MySQL did not become available in time" && exit 1
 
-      - name: echo env variables
+      - name: Echo Environment Variables
         run: |
-         echo  "${{env.MYSQL_ROOT_PASSWORD}}"
+          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}"
 
   deploy:
     needs: test
@@ -63,12 +63,13 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
         options: >-
-          --health-cmd="mysqladmin ping -h mysql --silent"
+          --health-cmd="mysqladmin ping -h localhost --silent"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -78,32 +79,20 @@ jobs:
         with:
           go-version: '^1.13.1'
 
-     
       - name: Wait for MySQL
-        id: waiting-mysql
         run: |
           for i in {1..30}; do
-
-          if mysqladmin ping -h mysql -P 3306 --silent; then
+            if mysqladmin ping -h localhost -P 3306 --silent; then
               echo "MySQL is up and running"
-
-          exit 0
-
-          fi
-
-          echo "Waiting for MySQL..."
-
-          sleep 2
-
+              exit 0
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
           done
-
           echo "MySQL did not become available in time" && exit 1
 
       - name: Build
-        if: failure() && steps.waiting-mysql.outcome.failure == 'failure'
         run: go build -o book-service
-        
 
       - name: Run
         run: ./book-service
-
