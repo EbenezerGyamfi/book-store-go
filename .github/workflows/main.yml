@@ -109,4 +109,8 @@ jobs:
           DB_USER: root
           DB_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           DB_NAME: books
-        run: ./main
+        run: |
+          ./main &
+          PID=$!
+          sleep 10 # Wait to confirm the application is running
+          kill $PID
