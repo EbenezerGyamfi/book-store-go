@@ -44,7 +44,7 @@ jobs:
               echo "MySQL is up and running"
               exit 0
             fi
-            echo "Waiting for MySQL..."
+            echo "Waiting for MySQL.."
             sleep 2
           done
           echo "MySQL did not become available in time" && exit 1
