@@ -67,7 +67,7 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-
+          MYSQL_DATABASE: books
 
         options: >-
           --health-cmd="mysqladmin ping -h localhost --silent"
