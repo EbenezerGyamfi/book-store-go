@@ -39,7 +39,7 @@ jobs:
 
       - name: Wait for MySQL
         run: |
-          for i in {1..60}; do
+          for i in {1.60}; do
             if mysqladmin ping -h 127.0.0.1 -P 3306 --silent; then
               echo "MySQL is up and running"
               exit 0
@@ -52,64 +52,61 @@ jobs:
       - name: Echo Environment Variables
         run: |
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}"
- deploy:
-  needs: test
-  runs-on: ubuntu-latest
-  environment: testing
-  services:
-    mysql:
-      image: mysql:8.0
-      ports:
-        - 3306:3306
-      env:
-        MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-      options: >-
-        --health-cmd="mysqladmin ping -h localhost --silent"
-        --health-interval=10s
-        --health-timeout=5s
-        --health-retries=3
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: testing
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          DB_HOST: localhost
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          DB_NAME: books
 
-    - name: Setup Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '^1.13.1'
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
-    - name: Wait for MySQL
-      run: |
-        for i in {1..30}; do
-          if mysqladmin ping -h 127.0.0.1 -P 3306 --silent; then
-            echo "MySQL is up and running"
-            exit 0
-          fi
-          echo "Waiting for MySQL..."
-          sleep 2
-        done
-        echo "MySQL did not become available in time. Showing logs:"
-        docker logs mysql || true
-        exit 1
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set Environment Variables for Application
-      env:
-        DB_HOST: 127.0.0.1
-        DB_PORT: 3306
-        DB_USER: root
-        DB_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-        DB_NAME: books
-      run: |
-        echo "Environment variables set for the application."
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '^1.13.1'
 
-    - name: Build
-      run: go build -o book-service
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -P 3306 --silent; then
+              echo "MySQL is up and running"
+              exit 0
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+          echo "MySQL did not become available in time. Showing logs:"
+          docker logs mysql || true
+          exit 1
 
-    - name: Run
-      env:
-        DB_HOST: 127.0.0.1
-        DB_PORT: 3306
-        DB_USER: root
-        DB_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-        DB_NAME: books
-      run: ./book-service
+
+      - name: Build
+        run: go build -o book-service
+
+      - name: Run
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          DB_NAME: books
+        run: ./book-service
