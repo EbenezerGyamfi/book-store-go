@@ -19,6 +19,8 @@ jobs:
           - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+
         options: >-
           --health-cmd="mysqladmin ping -h localhost --silent"
           --health-interval=10s
@@ -63,11 +65,9 @@ jobs:
         ports:
           - 3306:3306
         env:
-          DB_HOST: localhost
-          DB_PORT: 3306
-          DB_USER: root
-          DB_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          DB_NAME: books
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+
 
         options: >-
           --health-cmd="mysqladmin ping -h localhost --silent"
