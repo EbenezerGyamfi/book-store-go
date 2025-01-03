@@ -1,45 +1,67 @@
 pipeline {
     agent {
         docker {
-            image 'golang:latest'
-            args '-u root:root'
+            image 'golang:1.20-alpine' // Replace with your desired Go version
         }
     }
 
     environment {
-        DB_HOST = 'mysql'
-        DB_USER = 'root'
-        DB_PASSWORD = 'root'
+        DB_HOST = 'localhost' // Example environment variables, if needed
+        DB_USER = 'user'
+        DB_PASSWORD = 'password'
         DB_NAME = 'books'
     }
 
     stages {
-        stage('Setup MySQL') {
+        stage('Clone Repository') {
             steps {
-                script {
-                    docker.image('mysql:latest').run('-e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=books --name mysql -d mysql:latest')
-                }
-                sh 'sleep 15' // Wait for MySQL to initialize
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                go mod tidy
+                '''
             }
         }
 
         stage('Build') {
             steps {
                 sh '''
-
+                go build -o app ./cmd/main/main.go
                 '''
             }
         }
 
-      
+        // stage('Test') {
+        //     steps {
+        //         sh '''
+        //         go test ./... -v
+        //         '''
+        //     }
+        // }
+
+        // stage('Package') {
+        //     steps {
+        //         sh '''
+        //         tar -czf app.tar.gz app
+        //         '''
+        //     }
+        // }
     }
 
     post {
         always {
-            script {
-                // Clean up the MySQL container
-                sh 'docker rm -f mysql || true'
-            }
+            echo 'Cleaning up workspace...'
+            cleanWs()
+        }
+        success {
+            echo 'Build completed successfully!'
+        }
+        failure {
+            echo 'Build failed. Check logs for details.'
         }
     }
 }
