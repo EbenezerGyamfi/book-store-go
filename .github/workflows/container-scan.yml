@@ -27,6 +27,6 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          IMAGE_NAME=raghuthesecurityexpert/supermariogitopsproject
+          IMAGE_NAME=ebenezer97/devops-training
           docker build -t $IMAGE_NAME:${{ env.VERSION }} .
           docker push $IMAGE_NAME:${{ env.VERSION }}
