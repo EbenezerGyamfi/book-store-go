@@ -30,7 +30,6 @@ jobs:
           IMAGE_NAME=ebenezer97/devops-training
           docker build -t $IMAGE_NAME:${{ env.VERSION }} .
           docker push $IMAGE_NAME:${{ env.VERSION }}
-          - name: Run Trivy vulnerability scanner in tarball mode
           
       - name: Run Trivy vulnerability scanner in tarball mode
         uses: aquasecurity/trivy-action@master
