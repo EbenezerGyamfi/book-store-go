@@ -31,6 +31,10 @@ jobs:
           docker build -t $IMAGE_NAME:${{ env.VERSION }} .
           docker push $IMAGE_NAME:${{ env.VERSION }}
 
+      - name: Save Docker image to tarball
+        run: |
+          docker save ebenezer97/devops-training:${{ env.VERSION }} -o supermariolatestdockerimage.tar
+
       - name: Run Trivy vulnerability scanner in tarball mode
         uses: aquasecurity/trivy-action@master
         with:
