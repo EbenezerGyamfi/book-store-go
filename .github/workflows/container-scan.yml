@@ -36,13 +36,11 @@ jobs:
           docker push $IMAGE:${{ env.VERSION }}
           docker push $IMAGE:latest
 
-      # ✅ 4. Save Docker image to tarball
       - name: Save Docker image to tarball
         run: |
           IMAGE=${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}
           docker save $IMAGE:${{ env.VERSION }} -o supermariolatestdockerimage.tar
 
-      # ✅ 5. Scan image for vulnerabilities
       - name: Run Trivy vulnerability scanner in tarball mode
         uses: aquasecurity/trivy-action@master
         with:
