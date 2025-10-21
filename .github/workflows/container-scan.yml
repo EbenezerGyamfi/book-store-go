@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
  
     steps:
-      - name: Checkout Repository
+      - name: Checkout GO Repository
         uses: actions/checkout@v3
    
       - name: Login to Docker Hub
